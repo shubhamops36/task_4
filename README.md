@@ -9,6 +9,25 @@ Fieldnotes is an offline-first community journal demo built with Flutter.
 - Save and remove bookmarks; the library is available offline.
 - Local test notifications, with optional Firebase Cloud Messaging for remote updates.
 
+## Implementation Steps
+
+1. **Bootstrap the app:** `lib/main.dart` initializes Flutter bindings and the notification service, then starts `FieldnotesApp` from `lib/fieldnotes_app.dart`.
+2. **Define the feed model:** `Fieldnote` represents a story and supports JSON serialization. Starter stories provide content on first launch, without requiring a network connection.
+3. **Add local persistence:** `FeedStore` uses `shared_preferences` to cache feed JSON, saved story IDs, and the notification preference. If cached feed data is invalid, the app restores the starter feed.
+4. **Build the user interface:** The Discover screen provides category filters, search, pull-to-refresh, bookmarking, and a daily writing prompt. Saved lists bookmarked stories, and Settings contains notification and cache controls.
+5. **Persist user notes:** Writing a note adds it to the local feed cache, so it remains available after restarting the app and while offline.
+6. **Integrate notifications:** `NotificationService` initializes local notifications and attempts Firebase initialization. With Firebase configured, the app requests permission, subscribes to `fieldnotes_updates`, and displays foreground FCM messages. Without Firebase, local demo alerts remain available.
+7. **Configure Android:** The manifest declares internet and notification permissions. Gradle enables core-library desugaring for the local-notification plugin.
+8. **Verify the app:** Run analysis and widget tests, then build the Android debug APK:
+
+	```sh
+	flutter analyze lib test
+	flutter test
+	flutter build apk --debug
+	```
+
+The resulting debug APK is written to `build/app/outputs/flutter-apk/app-debug.apk`. Build outputs are ignored by Git; downloadable APKs can be attached to a GitHub Release.
+
 ## Run
 
 ```sh
